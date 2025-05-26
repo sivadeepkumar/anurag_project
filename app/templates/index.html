@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Automation Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --warning-color: #f8961e;
+            --info-color: #4895ef;
+            --dark-color: #1d3557;
+            --light-color: #f8f9fa;
+            --card-color: #ffffff;
+            --background-gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #f5f7ff;
+            font-family: 'Poppins', sans-serif;
+            color: #2e2e2e;
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .header {
+            background: var(--background-gradient);
+            color: white;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            font-size: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            background-color: transparent;
+            border-radius: var(--border-radius);
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .card-container {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+        }
+        
+        .card-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-title {
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+        
+        .section-title i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        /* Tabs Styling */
+        .nav-tabs {
+            border-bottom: none;
+            margin-bottom: 1rem;
+            gap: 0.25rem;
+        }
+        
+        .nav-tabs .nav-item {
+            margin-bottom: 0;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            background-color: #e9ecef;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            background-color: #dee2e6;
+            color: #495057;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: var(--background-gradient);
+            color: white;
+        }
+        
+        /* Upload Area Styling */
+        .upload-container {
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-box {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border: 2px dashed #d1d9e6;
+            border-radius: var(--border-radius);
+            margin: 0.75rem 0;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .upload-box:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .upload-box i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-box p {
+            font-weight: 500;
+            color: #6c757d;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+        
+        /* Updated JSON Preview Styling */
+        .json-preview {
+            margin-top: 1.5rem;
+            max-height: 800px;
+            overflow-y: auto;
+            padding: 0;
+            border-radius: var(--border-radius);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #f0f0f0;
+        }
+        
+        .json-preview::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .json-preview::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 20px;
+        }
+        
+        .json-preview::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 20px;
+        }
+        
+        /* New Modern Compact Card Styling for JSON Data */
+        .record-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 0.75rem;
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+            background: #ffffff;
+            width: 100%;
+        }
+        
+        .record-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .record-card .card-header {
+            background: var(--background-gradient);
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border-bottom: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .record-card .card-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .record-card .card-body {
+            padding: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            background-color: white;
+        }
+        
+        .field-item {
+            padding: 0.5rem;
+            margin-bottom: 0;
+            border-radius: 8px;
+            background-color: #f8faff;
+            transition: var(--transition);
+            flex: 1 1 calc(50% - 0.5rem);
+            min-width: 120px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border-left: 3px solid transparent;
+        }
+        
+        .field-item:hover {
+            background-color: #f0f5ff;
+            border-left-color: var(--primary-color);
+            transform: translateX(2px);
+        }
+        
+        /* Special fields styling */
+        .field-item.email-field {
+            border-left-color: #4cc9f0;
+            background-color: rgba(76, 201, 240, 0.05);
+        }
+        
+        .field-item.email-field:hover {
+            background-color: rgba(76, 201, 240, 0.1);
+        }
+        
+        .field-item.status-field {
+            border-left-color: #4361ee;
+            background-color: rgba(67, 97, 238, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .verify-button {
+            background: rgba(67, 97, 238, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .verify-button:hover {
+            background: rgba(67, 97, 238, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .verify-button i {
+            font-size: 0.8rem;
+        }
+        
+        .verify-button.verifying {
+            background: rgba(67, 97, 238, 0.2);
+            cursor: not-allowed;
+        }
+        
+        .verify-button.verified {
+            background: rgba(46, 213, 115, 0.1);
+            color: #2ed573;
+        }
+        
+        .verify-button.failed {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .field-item.attachment-field {
+            border-left-color: #f72585;
+            background-color: rgba(247, 37, 133, 0.05);
+        }
+        
+        .field-item.attachment-field:hover {
+            background-color: rgba(247, 37, 133, 0.1);
+        }
+        
+        .field-name {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.2rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6e7bb8;
+            opacity: 0.9;
+        }
+        
+        .field-value {
+            font-weight: 500;
+            overflow-wrap: break-word;
+            font-size: 0.8rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .status-ready {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.15), rgba(67, 97, 238, 0.15));
+            color: var(--success-color);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+        
+        .status-success {
+            background: linear-gradient(135deg, rgba(46, 213, 115, 0.15), rgba(32, 178, 170, 0.15));
+            color: #2ed573;
+            border: 1px solid rgba(46, 213, 115, 0.3);
+        }
+        
+        .status-failed {
+            background: linear-gradient(135deg, rgba(247, 37, 133, 0.15), rgba(255, 56, 56, 0.15));
+            color: var(--danger-color);
+            border: 1px solid rgba(247, 37, 133, 0.3);
+        }
+        
+        /* File existence status indicators */
+        .file-status {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+        
+        .file-status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background-color: #FFE4EF;
+            color: #F74284;
+            font-size: 0.7rem;
+        }
+        
+        .file-exists {
+            background-color: #EBFAF2;
+            color: #2ed573;
+        }
+        
+        .file-missing {
+            background-color: #FFE4EF;
+            color: #F74284;
+        }
+
+        .not-verified {
+            background-color: #FFE4EF;
+            color: #F74284;
+        }
+
+        /* Remove the generic card-header style that's causing conflicts */
+        /* .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        } */
+
+        .record-id {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .record-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-button {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .action-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .action-button.copy-button:hover {
+            background: rgba(76, 201, 240, 0.25);
+        }
+
+        .action-button.delete-button:hover {
+            background: rgba(247, 37, 133, 0.25);
+        }
+
+        .action-button i {
+            font-size: 0.9rem;
+        }
+
+        .action-button .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            margin-bottom: 5px;
+        }
+
+        .action-button:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .action-button .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 4px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+        }
+
+        /* Record cards container */
+        .record-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 992px) {
+            .record-cards-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Modern File List Styling */
+        .attachment-section {
+            margin-top: 1rem;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .attachment-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eef1f8;
+        }
+
+        .attachment-section-header h3 {
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .attachment-section-header h3 i {
+            margin-right: 0.5rem;
+            background: rgba(67, 97, 238, 0.1);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: var(--primary-color);
+        }
+
+        .attachment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: #f8faff;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .attachment-item:hover {
+            background: #f0f5ff;
+            transform: translateX(2px);
+            border-left-color: var(--primary-color);
+        }
+
+        .attachment-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .attachment-icon.pdf {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .attachment-icon.excel {
+            background: rgba(29, 111, 66, 0.1);
+            color: #1d6f42;
+        }
+
+        .attachment-icon.json {
+            background: rgba(245, 166, 35, 0.1);
+            color: #f5a623;
+        }
+
+        .attachment-icon.image {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        .attachment-icon.doc {
+            background: rgba(0, 102, 204, 0.1);
+            color: #0066cc;
+        }
+
+        .attachment-icon.text {
+            background: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+        }
+
+        .attachment-icon.other {
+            background: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+
+        .attachment-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #333;
+        }
+
+        .attachment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .attachment-action-btn {
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6c757d;
+        }
+
+        .attachment-action-btn:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+        }
+
+        .attachment-action-btn.delete:hover {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--danger-color);
+        }
+
+        .drop-area {
+            border: 2px dashed #d8e2f3;
+            border-radius: var(--border-radius);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            margin: 0.75rem 0 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: rgba(67, 97, 238, 0.03);
+            position: relative;
+        }
+        
+        .drop-area:hover, .drop-area.active {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.07);
+            transform: scale(1.01);
+        }
+        
+        .drop-area i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+        
+        .drop-area h4 {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .drop-area p {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-bottom: 0;
+        }
+
+        .file-list-container {
+            margin-top: 1.5rem;
+        }
+        
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .card-container {
+                padding: 0.75rem;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .upload-box, .drop-area {
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        /* Add styles for refresh button */
+        .refresh-button {
+            background: rgba(67, 97, 238, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .refresh-button:hover {
+            background: rgba(67, 97, 238, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .refresh-button i {
+            font-size: 0.8rem;
+        }
+        
+        .refresh-button.refreshing {
+            background: rgba(67, 97, 238, 0.2);
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Mail Sender tool</h1>
+        <p>Powerful data transformation tool for email automation</p>
+    </div>
+    
+    <div class="dashboard-container">
+        <div class="card-container w-100">
+            <h2 class="section-title"><i class="fas fa-envelope"></i> Email Automation Tool</h2>
+            <p class="mb-4">Upload your Excel file with recipient data to convert it to JSON format.</p>
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info alert-dismissible fade show fade-in" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="excel-tab" data-bs-toggle="tab" data-bs-target="#excel-content" type="button" role="tab" aria-controls="excel-content" aria-selected="true">
+                        <i class="fas fa-file-excel me-2"></i>Excel to JSON
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="folder-tab" data-bs-toggle="tab" data-bs-target="#folder-content" type="button" role="tab" aria-controls="folder-content" aria-selected="false">
+                        <i class="fas fa-folder-open me-2"></i>Upload Files/Folders
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="attachments-tab" data-bs-toggle="tab" data-bs-target="#attachments-content" type="button" role="tab" aria-controls="attachments-content" aria-selected="false">
+                        <i class="fas fa-paperclip me-2"></i>Attachments
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="new-tab" data-bs-toggle="tab" data-bs-target="#new-content" type="button" role="tab"
+                        aria-controls="new-content" aria-selected="false">
+                        Send Mails to Recipients
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="myTabContent">
+                <!-- Excel to JSON Tab -->
+                <div class="tab-pane fade show active" id="excel-content" role="tabpanel" aria-labelledby="excel-tab">
+                    <div class="upload-container">
+                        <h3 class="section-title"><i class="fas fa-upload"></i> Step 1: Upload Data</h3>
+                        
+                        <div class="row g-4">
+                            <div class="col-lg-4">
+                                <div class="card-container h-100 w-100">
+                                    <h4 class="mb-3">Upload Excel File</h4>
+                                    <p>Upload Excel file to convert to JSON with status field</p>
+                                    
+                                    <div class="upload-box" id="excel-upload-box">
+                                        <i class="fas fa-file-excel"></i>
+                                        <h4 class="mt-3">Click to upload Excel file</h4>
+                                        <p>Support for .xlsx and .xls formats</p>
+                                    </div>
+                                    
+                                    <form id="upload-form" enctype="multipart/form-data" class="d-none">
+                                        <input type="file" id="excel-file" name="file" accept=".xlsx,.xls">
+                                    </form>
+                                    
+                                    <div id="error-message" class="error-message"></div>
+                                    
+                                    <button id="convert-btn" class="btn btn-primary mt-3 w-100" disabled>
+                                        <i class="fas fa-sync-alt me-2"></i>Convert Excel to JSON
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-8">
+                                <div class="card-container h-100 w-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4>Preview JSON Data</h4>
+                                        <button id="add-json-btn" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-plus me-1"></i> Add JSON Record
+                                        </button>
+                                    </div>
+                                    <div id="json-preview" class="json-preview">
+                                        <p class="text-center text-muted">JSON data will appear here</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Folder Upload Tab -->
+                <div class="tab-pane fade" id="folder-content" role="tabpanel" aria-labelledby="folder-tab">
+                    <div class="upload-container">
+                        <h3 class="section-title mt-4"><i class="fas fa-folder-open"></i> Upload Files or Folders</h3>
+                        <p>Drag and drop files or an entire folder to upload them to the server.</p>
+                        
+                        <div class="drop-area" id="folder-drop-area">
+                            <i class="fas fa-folder-open"></i>
+                            <h4>Drag & Drop Files or Folders Here</h4>
+                            <p>Or click to select files</p>
+                        </div>
+                        
+                        <form id="folder-upload-form" class="d-none">
+                            <input type="file" id="folder-file-input" webkitdirectory multiple>
+                        </form>
+                        
+                        <div id="folder-error" class="error-message"></div>
+                        
+                        <div class="progress mt-4" style="display: none;" id="progress-container">
+                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress-bar"></div>
+                        </div>
+                        
+                        <div class="attachment-section">
+                            <div class="attachment-section-header">
+                                <h3><i class="fas fa-list"></i> Uploaded Files</h3>
+                            </div>
+                            <div class="attachment-list" id="file-list">
+                                {% if upload_files %}
+                                    {% for file in upload_files %}
+                                        <div class="attachment-item">
+                                            {% if file.endswith('.xlsx') or file.endswith('.xls') %}
+                                                <div class="attachment-icon excel">
+                                                    <i class="fas fa-file-excel"></i>
+                                                </div>
+                                            {% elif file.endswith('.json') %}
+                                                <div class="attachment-icon json">
+                                                    <i class="fas fa-file-code"></i>
+                                                </div>
+                                            {% elif file.endswith('.pdf') %}
+                                                <div class="attachment-icon pdf">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </div>
+                                            {% elif file.endswith('.jpg') or file.endswith('.jpeg') or file.endswith('.png') %}
+                                                <div class="attachment-icon image">
+                                                    <i class="fas fa-file-image"></i>
+                                                </div>
+                                            {% else %}
+                                                <div class="attachment-icon other">
+                                                    <i class="fas fa-file"></i>
+                                                </div>
+                                            {% endif %}
+                                            <span class="attachment-name">{{ file }}</span>
+                                            <div class="attachment-actions">
+                                                <button class="attachment-action-btn delete" data-file="{{ file }}" data-type="upload" title="Delete file">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-center text-muted">No files uploaded yet</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attachments Tab -->
+                <div class="tab-pane fade" id="attachments-content" role="tabpanel" aria-labelledby="attachments-tab">
+                    <div class="upload-container">
+                        <h3 class="section-title mt-4"><i class="fas fa-paperclip"></i> Upload Attachments</h3>
+                        <p>Upload multiple files at once to the attachments folder.</p>
+                        
+                        <div class="drop-area" id="attachments-drop-area">
+                            <i class="fas fa-paperclip"></i>
+                            <h4>Drag & Drop Attachments Here</h4>
+                            <p>Or click to select multiple files</p>
+                        </div>
+                        
+                        <form id="attachments-upload-form" class="d-none">
+                            <input type="file" id="attachments-file-input" multiple>
+                        </form>
+                        
+                        <div id="attachments-error" class="error-message"></div>
+                        
+                        <div class="progress mt-4" style="display: none;" id="attachments-progress-container">
+                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="attachments-progress-bar"></div>
+                        </div>
+                        
+                        <div class="attachment-section">
+                            <div class="attachment-section-header">
+                                <h3><i class="fas fa-paperclip"></i> Uploaded Attachments</h3>
+                            </div>
+                            <div class="attachment-list" id="attachments-list">
+                                {% if attachment_files %}
+                                    {% for file in attachment_files %}
+                                        <div class="attachment-item">
+                                            {% if file.endswith('.xlsx') or file.endswith('.xls') %}
+                                                <div class="attachment-icon excel">
+                                                    <i class="fas fa-file-excel"></i>
+                                                </div>
+                                            {% elif file.endswith('.json') %}
+                                                <div class="attachment-icon json">
+                                                    <i class="fas fa-file-code"></i>
+                                                </div>
+                                            {% elif file.endswith('.pdf') %}
+                                                <div class="attachment-icon pdf">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </div>
+                                            {% elif file.endswith('.jpg') or file.endswith('.jpeg') or file.endswith('.png') %}
+                                                <div class="attachment-icon image">
+                                                    <i class="fas fa-file-image"></i>
+                                                </div>
+                                            {% elif file.endswith('.doc') or file.endswith('.docx') %}
+                                                <div class="attachment-icon doc">
+                                                    <i class="fas fa-file-word"></i>
+                                                </div>
+                                            {% elif file.endswith('.txt') %}
+                                                <div class="attachment-icon text">
+                                                    <i class="fas fa-file-alt"></i>
+                                                </div>
+                                            {% else %}
+                                                <div class="attachment-icon other">
+                                                    <i class="fas fa-file"></i>
+                                                </div>
+                                            {% endif %}
+                                            <span class="attachment-name">{{ file }}</span>
+                                            <div class="attachment-actions">
+                                                <button class="attachment-action-btn delete" data-file="{{ file }}" data-type="attachment" title="Delete file">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-center text-muted">No attachments uploaded yet</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="new-content" role="tabpanel" aria-labelledby="new-tab">
+<div class="upload-container">
+    <h3 class="section-title mt-4"><i class="fas fa-plus"></i> Send Email via SMTP</h3>
+
+    <form id="emailForm">
+        <div class="form-group">
+            <label for="senderEmail">Your Gmail:</label>
+            <input type="email" class="form-control" id="senderEmail" required>
+        </div>
+        <div class="form-group">
+            <label for="appPassword">App Password:</label>
+            <input type="password" class="form-control" id="appPassword" required>
+        </div>
+        <!-- <div class="form-group">
+            <label for="recipientEmail">Recipient Email:</label>
+            <input type="email" class="form-control" id="recipientEmail" required>
+        </div> -->
+        <div class="form-group">
+            <label for="emailSubject">Subject:</label>
+            <input type="text" class="form-control" id="emailSubject" required>
+        </div>
+        <div class="form-group">
+            <label for="emailBody">Message:</label>
+            <textarea class="form-control" id="emailBody" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Email</button>
+    </form>
+    <div id="emailStatus" class="mt-3"></div>
+</div>
+
+<script>
+    document.getElementById('emailForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const data = {
+            sender_email: document.getElementById('senderEmail').value,
+            app_password: document.getElementById('appPassword').value,
+            // recipient_email: document.getElementById('recipientEmail').value,
+            subject: document.getElementById('emailSubject').value,
+            body: document.getElementById('emailBody').value
+        };
+
+        const response = await fetch('/send_email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        const statusDiv = document.getElementById('emailStatus');
+        statusDiv.innerHTML = result.success ?
+            `<div class="alert alert-success">${result.message}</div>` :
+            `<div class="alert alert-danger">Error: ${result.error}</div>`;
+    });
+</script>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add JSON Modal -->
+    <div class="modal fade" id="addJsonModal" tabindex="-1" aria-labelledby="addJsonModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addJsonModalLabel"><i class="fas fa-code me-2"></i>Add JSON Data</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="jsonInput" class="form-label">Paste JSON data below:</label>
+                        <textarea id="jsonInput" class="form-control" rows="10" placeholder='{"EMAIL": "example@example.com", "NAME": "John Doe"}'></textarea>
+                        <div id="jsonError" class="error-message mt-2"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="submitJsonBtn" class="btn btn-primary">Add Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add Toast container
+            const toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+            toastContainer.style.zIndex = '1050';
+            document.body.appendChild(toastContainer);
+            
+            // Excel Upload Variables
+            const uploadBox = document.getElementById('excel-upload-box');
+            const fileInput = document.getElementById('excel-file');
+            const form = document.getElementById('upload-form');
+            const convertBtn = document.getElementById('convert-btn');
+            const jsonPreview = document.getElementById('json-preview');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Folder Upload Variables
+            const folderDropArea = document.getElementById('folder-drop-area');
+            const folderFileInput = document.getElementById('folder-file-input');
+            const folderForm = document.getElementById('folder-upload-form');
+            const folderError = document.getElementById('folder-error');
+            const fileList = document.getElementById('file-list');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            
+            // Attachments Upload Variables
+            const attachmentsDropArea = document.getElementById('attachments-drop-area');
+            const attachmentsFileInput = document.getElementById('attachments-file-input');
+            const attachmentsForm = document.getElementById('attachments-upload-form');
+            const attachmentsError = document.getElementById('attachments-error');
+            const attachmentsList = document.getElementById('attachments-list');
+            const attachmentsProgressContainer = document.getElementById('attachments-progress-container');
+            const attachmentsProgressBar = document.getElementById('attachments-progress-bar');
+            
+            // JSON Filename
+            window.jsonFilename = 'email_data.json';
+            
+            // Load initial JSON data
+            loadJSONData();
+            
+            function loadJSONData() {
+                fetch('/get_json_data')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.data) {
+                            // Store the data in a global variable for validation access
+                            window.jsonData = data.data;
+                            
+                            // Display the JSON data
+                            displayJSONData(data.data);
+                            
+                            // Enable Convert button if data is loaded
+                            convertBtn.removeAttribute('disabled');
+                        convertBtn.innerHTML = '<i class="fas fa-sync-alt me-2"></i>INSERT DATA TO SCRIPT';
+                        } else {
+                            jsonPreview.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle me-2"></i> No data found</div>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading JSON data:', error);
+                        jsonPreview.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle me-2"></i> Error loading JSON data</div>';
+                    });
+            }
+            
+            function displayJSONData(data) {
+                if (!data || data.length === 0) {
+                    jsonPreview.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle me-2"></i> No data found</div>';
+                    return;
+                }
+                
+                let cardsHtml = '<div class="fade-in">';
+                
+                // Process each record
+                for (let i = 0; i < data.length; i++) {
+                    const item = data[i];
+                    let fieldsHtml = '';
+                    
+                    // Process all fields
+                    for (const [key, value] of Object.entries(item)) {
+                        let fieldClass = '';
+                        let iconHtml = '';
+                        
+                        // Skip STATUS field
+                        if (key === 'STATUS') {
+                            continue;
+                        }
+                        
+                        // Add special classes and icons based on field type
+                        if (key === 'ATTACH_FILENAME') {
+                            fieldClass = 'attachment-field';
+                            
+                            // Show filename with verify and refresh buttons
+                            const hasFilename = value && value.trim() !== '';
+                            if (hasFilename) {
+                                iconHtml = `
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fas fa-paperclip me-1"></i>
+                                        <span>${value}</span>
+                                        <div class="d-flex gap-1">
+                                            <button class="verify-button" data-record-id="${i}" data-filename="${value}">
+                                                <i class="fas fa-check-circle"></i>
+                                                Verify
+                                            </button>
+                                            <button class="refresh-button" data-record-id="${i}" data-filename="${value}" title="Refresh verification">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                iconHtml = `<div><i class="fas fa-paperclip me-1"></i> No attachment</div>`;
+                            }
+                        } else if (key === 'SENDER_EMAIL' || key.includes('SENDER_EMAIL')) {
+                            fieldClass = 'email-field';
+                            iconHtml = `<i class="fas fa-envelope me-1"></i> ${value}`;
+                        } else if (key === 'CC' || key.includes('CC')) {
+                            fieldClass = 'email-field';
+                            iconHtml = `<i class="fas fa-copy me-1"></i> ${value}`;
+                        } else if (key === 'BCC' || key.includes('BCC') || key === 'BB' || key.includes('BB')) {
+                            fieldClass = 'email-field';
+                            iconHtml = `<i class="fas fa-user-secret me-1"></i> ${value}`;
+                        } else if (key === 'CONTEXT' || key.includes('CONTEXT')) {
+                            iconHtml = `<i class="fas fa-tag me-1"></i> ${value}`;
+                        } else {
+                            iconHtml = value;
+                        }
+                        
+                        fieldsHtml += `
+                            <div class="field-item ${fieldClass}">
+                                <span class="field-name">${key}</span>
+                                <div class="field-value">${iconHtml}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Card structure with cleaner header
+                    cardsHtml += `
+                        <div class="record-card">
+                            <div class="card-header">
+                                <div class="record-id">
+                                    <i class="fas fa-database me-2"></i>
+                                    Record #${i + 1}
+                                </div>
+                                <div class="record-actions">
+                                    <button class="action-button copy-button" data-record-id="${i}" title="Copy record">
+                                        <i class="fas fa-copy"></i>
+                                        <span class="tooltip">Copy Record</span>
+                                    </button>
+                                    <button class="action-button delete-button" data-record-id="${i}" title="Delete record">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <span class="tooltip">Delete Record</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                ${fieldsHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                cardsHtml += '</div>';
+                jsonPreview.innerHTML = cardsHtml;
+                
+                // Add event listeners after the cards are rendered
+                setupCardButtonListeners();
+            }
+            
+            // Setup event listeners for the card buttons
+            function setupCardButtonListeners() {
+                // First remove any existing listeners by cloning the elements
+                const copyButtons = document.querySelectorAll('.copy-button');
+                const deleteButtons = document.querySelectorAll('.delete-button');
+                
+                // Setup copy buttons
+                copyButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Prevent event bubbling
+                        const recordId = this.getAttribute('data-record-id');
+                        if (!recordId || !window.jsonData) return;
+                        
+                        const recordData = window.jsonData[recordId];
+                        if (!recordData) return;
+                        
+                        // Show loading state
+                        const originalHTML = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                        this.disabled = true;
+                        
+                        // Copy to clipboard
+                        const jsonString = JSON.stringify(recordData, null, 2);
+                        navigator.clipboard.writeText(jsonString)
+                            .then(() => {
+                                // Show success state
+                                this.innerHTML = '<i class="fas fa-check"></i>';
+                                showToast('Record copied to clipboard!', 'success');
+                                
+                                // Reset button after delay
+                                setTimeout(() => {
+                                    this.innerHTML = originalHTML;
+                                    this.disabled = false;
+                                }, 1500);
+                            })
+                            .catch(err => {
+                                // Show error state
+                                this.innerHTML = '<i class="fas fa-times"></i>';
+                                showToast('Could not copy: ' + err, 'danger');
+                                
+                                // Reset button after delay
+                                setTimeout(() => {
+                                    this.innerHTML = originalHTML;
+                                    this.disabled = false;
+                                }, 1500);
+                            });
+                    });
+                });
+                
+                // Setup delete buttons
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Prevent event bubbling
+                        const recordId = this.getAttribute('data-record-id');
+                        
+                        if (!recordId || !window.jsonData) return;
+                        
+                        // Show confirmation dialog
+                        const confirmDialog = document.createElement('div');
+                        confirmDialog.className = 'modal fade';
+                        confirmDialog.innerHTML = `
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete Record ${parseInt(recordId) + 1}?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                                            <i class="fas fa-trash-alt me-2"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        document.body.appendChild(confirmDialog);
+                        const modal = new bootstrap.Modal(confirmDialog);
+                        modal.show();
+                        
+                        // Handle confirmation
+                        confirmDialog.querySelector('#confirmDeleteBtn').addEventListener('click', function() {
+                            // Show loading state
+                            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                            button.disabled = true;
+                            
+                            // Remove the record from the global data
+                            const updatedData = [...window.jsonData];
+                            updatedData.splice(recordId, 1);
+                            
+                            // Save updated data
+                            fetch('/update_json_data', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    data: updatedData
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                modal.hide();
+                                confirmDialog.remove();
+                                
+                                if (data.success) {
+                                    // Update the global data
+                                    window.jsonData = updatedData;
+                                    
+                                    // Refresh the display
+                                    displayJSONData(updatedData);
+                                    
+                                    // Show success message
+                                    showToast(`Record ${parseInt(recordId) + 1} deleted successfully`, 'success');
+                                } else {
+                                    // Restore button and show error
+                                    button.innerHTML = originalHTML;
+                                    button.disabled = false;
+                                    showToast(`Error deleting record: ${data.error}`, 'danger');
+                                }
+                            })
+                            .catch(error => {
+                                modal.hide();
+                                confirmDialog.remove();
+                                console.error('Error:', error);
+                                // Restore button and show error
+                                button.innerHTML = originalHTML;
+                                button.disabled = false;
+                                showToast('Error deleting record', 'danger');
+                            });
+                        });
+                        
+                        // Clean up modal when hidden
+                        confirmDialog.addEventListener('hidden.bs.modal', function() {
+                            confirmDialog.remove();
+                        });
+                    });
+                });
+            }
+            
+            // Excel File Upload Logic
+            uploadBox.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) {
+                    uploadBox.innerHTML = `
+                        <i class="fas fa-file-excel"></i>
+                        <h4 class="mt-3">${fileInput.files[0].name}</h4>
+                        <p>Ready to convert</p>
+                    `;
+                    convertBtn.removeAttribute('disabled');
+                    errorMessage.textContent = '';
+                } else {
+                    uploadBox.innerHTML = `
+                        <i class="fas fa-file-excel"></i>
+                        <h4 class="mt-3">Click to upload Excel file</h4>
+                        <p>Support for .xlsx and .xls formats</p>
+                    `;
+                    convertBtn.setAttribute('disabled', 'disabled');
+                }
+            });
+            
+            convertBtn.addEventListener('click', function() {
+                if (fileInput.files.length > 0) {
+                    // We have a file to upload
+                    const file = fileInput.files[0];
+                    if (!file) {
+                        errorMessage.textContent = 'Please select a file first';
+                        return;
+                    }
+                    
+                    // Check file extension
+                    const fileExt = file.name.split('.').pop().toLowerCase();
+                    if (fileExt !== 'xlsx' && fileExt !== 'xls') {
+                        errorMessage.textContent = 'Invalid file format. Only Excel files are allowed.';
+                        return;
+                    }
+                    
+                    const formData = new FormData(form);
+                    
+                    // Show loading state
+                    convertBtn.textContent = 'Converting...';
+                    convertBtn.setAttribute('disabled', 'disabled');
+                    jsonPreview.innerHTML = '<p class="text-center">Processing...</p>';
+                    
+                    // Send AJAX request
+                    fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        convertBtn.removeAttribute('disabled');
+                        convertBtn.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Refresh JSON Data';
+                        
+                        if (data.success) {
+                            // Store the data in a global variable for validation access
+                            window.jsonData = data.data;
+                            
+                            // Display the JSON data
+                            displayJSONData(data.data);
+                            
+                            // Show success message
+                            showToast('File successfully uploaded and converted to JSON', 'success');
+                            updateFileList(); // Refresh file list
+                        } else {
+                            jsonPreview.innerHTML = `
+                                <div class="alert alert-danger fade-in">
+                                    <i class="fas fa-exclamation-circle me-2"></i> ${data.error || 'An error occurred during conversion'}
+                                </div>
+                            `;
+                            errorMessage.textContent = data.error || 'An error occurred during conversion';
+                        }
+                    })
+                    .catch(error => {
+                        convertBtn.removeAttribute('disabled');
+                        convertBtn.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Refresh JSON Data';
+                        jsonPreview.innerHTML = `
+                            <div class="alert alert-danger fade-in">
+                                <i class="fas fa-exclamation-circle me-2"></i> An error occurred during the request
+                            </div>
+                        `;
+                        errorMessage.textContent = 'An error occurred during the request';
+                        console.error('Error:', error);
+                    });
+                } else {
+                    // No file, just refresh the JSON data
+                    convertBtn.textContent = 'Loading...';
+                    convertBtn.setAttribute('disabled', 'disabled');
+                    jsonPreview.innerHTML = '<p class="text-center">Loading data...</p>';
+                    
+                    // Load JSON data
+                    loadJSONData();
+                }
+            });
+            
+            // Folder Upload Logic
+            folderDropArea.addEventListener('click', function() {
+                folderFileInput.click();
+            });
+            
+            // Prevent default behavior for drag events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                folderDropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                folderDropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                folderDropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                folderDropArea.classList.add('active');
+            }
+            
+            function unhighlight() {
+                folderDropArea.classList.remove('active');
+            }
+            
+            // Handle drop event
+            folderDropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+            
+            folderFileInput.addEventListener('change', function() {
+                handleFiles(folderFileInput.files);
+            });
+            
+            function handleFiles(files) {
+                if (!files.length) {
+                    folderError.textContent = 'No files selected';
+                    return;
+                }
+                
+                folderError.textContent = '';
+                uploadFiles(files);
+            }
+            
+            function uploadFiles(files) {
+                const formData = new FormData();
+                
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('files[]', files[i]);
+                }
+                
+                // Show progress
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                progressBar.setAttribute('aria-valuenow', 0);
+                
+                // Simulate progress while uploading
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    if (progress >= 90) {
+                        clearInterval(interval);
+                    }
+                    progressBar.style.width = progress + '%';
+                    progressBar.setAttribute('aria-valuenow', progress);
+                }, 200);
+                
+                fetch('/upload_files', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    clearInterval(interval);
+                    progressBar.style.width = '100%';
+                    progressBar.setAttribute('aria-valuenow', 100);
+                    
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                    }, 1000);
+                    
+                    if (data.success) {
+                        updateFileListFromData(data.all_files);
+                    } else {
+                        folderError.textContent = data.error || 'An error occurred during upload';
+                    }
+                })
+                .catch(error => {
+                    clearInterval(interval);
+                    progressContainer.style.display = 'none';
+                    folderError.textContent = 'Error uploading files: ' + error.message;
+                    console.error('Error:', error);
+                });
+            }
+            
+            function updateFileList() {
+                fetch('/list_uploaded_files')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateFileListFromData(data.files);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating file list:', error);
+                    });
+            }
+            
+            function updateFileListFromData(files) {
+                if (!files || !files.length) {
+                    fileList.innerHTML = '<p class="text-center text-muted">No files uploaded yet</p>';
+                    return;
+                }
+                
+                let html = '';
+                files.forEach(file => {
+                    let iconClass = 'other';
+                    let iconElement = '<i class="fas fa-file"></i>';
+                    
+                    if (file.endsWith('.xlsx') || file.endsWith('.xls')) {
+                        iconClass = 'excel';
+                        iconElement = '<i class="fas fa-file-excel"></i>';
+                    } else if (file.endsWith('.json')) {
+                        iconClass = 'json';
+                        iconElement = '<i class="fas fa-file-code"></i>';
+                    } else if (file.endsWith('.pdf')) {
+                        iconClass = 'pdf';
+                        iconElement = '<i class="fas fa-file-pdf"></i>';
+                    } else if (file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png')) {
+                        iconClass = 'image';
+                        iconElement = '<i class="fas fa-file-image"></i>';
+                    } else if (file.endsWith('.doc') || file.endsWith('.docx')) {
+                        iconClass = 'doc';
+                        iconElement = '<i class="fas fa-file-word"></i>';
+                    } else if (file.endsWith('.txt')) {
+                        iconClass = 'text';
+                        iconElement = '<i class="fas fa-file-alt"></i>';
+                    }
+                    
+                    html += `
+                        <div class="attachment-item">
+                            <div class="attachment-icon ${iconClass}">
+                                ${iconElement}
+                            </div>
+                            <span class="attachment-name">${file}</span>
+                            <div class="attachment-actions">
+                                <button class="attachment-action-btn delete" data-file="${file}" data-type="upload" title="Delete file">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                fileList.innerHTML = html;
+            }
+            
+            // Attachments Upload Logic
+            attachmentsDropArea.addEventListener('click', function() {
+                attachmentsFileInput.click();
+            });
+            
+            // Prevent default behavior for drag events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                attachmentsDropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                attachmentsDropArea.addEventListener(eventName, function() {
+                    attachmentsDropArea.classList.add('active');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                attachmentsDropArea.addEventListener(eventName, function() {
+                    attachmentsDropArea.classList.remove('active');
+                }, false);
+            });
+            
+            // Handle drop event for attachments
+            attachmentsDropArea.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleAttachments(files);
+            }, false);
+            
+            attachmentsFileInput.addEventListener('change', function() {
+                handleAttachments(attachmentsFileInput.files);
+            });
+            
+            function handleAttachments(files) {
+                if (!files.length) {
+                    attachmentsError.textContent = 'No files selected';
+                    return;
+                }
+                
+                attachmentsError.textContent = '';
+                uploadAttachments(files);
+            }
+            
+            function uploadAttachments(files) {
+                const formData = new FormData();
+                
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('attachments[]', files[i]);
+                }
+                
+                // Show progress
+                attachmentsProgressContainer.style.display = 'block';
+                attachmentsProgressBar.style.width = '0%';
+                attachmentsProgressBar.setAttribute('aria-valuenow', 0);
+                
+                // Simulate progress while uploading
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    if (progress >= 90) {
+                        clearInterval(interval);
+                    }
+                    attachmentsProgressBar.style.width = progress + '%';
+                    attachmentsProgressBar.setAttribute('aria-valuenow', progress);
+                }, 200);
+                
+                fetch('/upload_attachments', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    clearInterval(interval);
+                    attachmentsProgressBar.style.width = '100%';
+                    attachmentsProgressBar.setAttribute('aria-valuenow', 100);
+                    
+                    setTimeout(() => {
+                        attachmentsProgressContainer.style.display = 'none';
+                    }, 1000);
+                    
+                    if (data.success) {
+                        updateAttachmentsListFromData(data.all_files);
+                    } else {
+                        attachmentsError.textContent = data.error || 'An error occurred during upload';
+                    }
+                })
+                .catch(error => {
+                    clearInterval(interval);
+                    attachmentsProgressContainer.style.display = 'none';
+                    attachmentsError.textContent = 'Error uploading files: ' + error.message;
+                    console.error('Error:', error);
+                });
+            }
+            
+            function updateAttachmentsList() {
+                fetch('/list_attachments')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateAttachmentsListFromData(data.files);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating attachments list:', error);
+                    });
+            }
+            
+            function updateAttachmentsListFromData(files) {
+                if (!files || !files.length) {
+                    attachmentsList.innerHTML = '<p class="text-center text-muted">No attachments uploaded yet</p>';
+                    return;
+                }
+                
+                let html = '';
+                files.forEach(file => {
+                    let iconClass = 'other';
+                    let iconElement = '<i class="fas fa-file"></i>';
+                    
+                    if (file.endsWith('.xlsx') || file.endsWith('.xls')) {
+                        iconClass = 'excel';
+                        iconElement = '<i class="fas fa-file-excel"></i>';
+                    } else if (file.endsWith('.json')) {
+                        iconClass = 'json';
+                        iconElement = '<i class="fas fa-file-code"></i>';
+                    } else if (file.endsWith('.pdf')) {
+                        iconClass = 'pdf';
+                        iconElement = '<i class="fas fa-file-pdf"></i>';
+                    } else if (file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png')) {
+                        iconClass = 'image';
+                        iconElement = '<i class="fas fa-file-image"></i>';
+                    } else if (file.endsWith('.doc') || file.endsWith('.docx')) {
+                        iconClass = 'doc';
+                        iconElement = '<i class="fas fa-file-word"></i>';
+                    } else if (file.endsWith('.txt')) {
+                        iconClass = 'text';
+                        iconElement = '<i class="fas fa-file-alt"></i>';
+                    }
+                    
+                    html += `
+                        <div class="attachment-item">
+                            <div class="attachment-icon ${iconClass}">
+                                ${iconElement}
+                            </div>
+                            <span class="attachment-name">${file}</span>
+                            <div class="attachment-actions">
+                                <button class="attachment-action-btn delete" data-file="${file}" data-type="attachment" title="Delete file">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                attachmentsList.innerHTML = html;
+            }
+            
+            // Initial file list updates
+            updateFileList();
+            updateAttachmentsList();
+            
+            // Add verify button click handler
+            document.addEventListener('click', function(e) {
+                if (e.target && (e.target.classList.contains('verify-button') || e.target.parentElement.classList.contains('verify-button'))) {
+                    const button = e.target.classList.contains('verify-button') ? e.target : e.target.parentElement;
+                    const recordId = button.getAttribute('data-record-id');
+                    const filename = button.getAttribute('data-filename');
+                    
+                    if (!recordId || !filename) return;
+                    
+                    // Show verifying state
+                    button.classList.add('verifying');
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+                    button.disabled = true;
+                    
+                    // Check if file exists in attachments
+                    fetch('/verify_attachment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            filename: filename
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            // Update button to show success
+                            button.classList.remove('verifying');
+                            button.classList.add('verified');
+                            button.innerHTML = '<i class="fas fa-check-circle"></i> Verified';
+                            showToast('File verified successfully!', 'success');
+                        } else {
+                            // Update button to show failure
+                            button.classList.remove('verifying');
+                            button.classList.add('failed');
+                            button.innerHTML = '<i class="fas fa-times-circle"></i> Missing';
+                            showToast('File not found in attachments folder', 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        button.classList.remove('verifying');
+                        button.innerHTML = '<i class="fas fa-times-circle"></i> Error';
+                        showToast('Error verifying file', 'danger');
+                    });
+                }
+            });
+            
+            // Handle file deletion
+            document.addEventListener('click', function(e) {
+                if (e.target && (e.target.classList.contains('delete') || 
+                                 e.target.parentElement.classList.contains('delete'))) {
+                    // Find the button element
+                    const button = e.target.classList.contains('delete') ? 
+                                  e.target : e.target.parentElement;
+                    const filename = button.getAttribute('data-file');
+                    const fileType = button.getAttribute('data-type');
+                    
+                    if (!filename) return;
+                    
+                    // Confirm delete
+                    if (confirm(`Are you sure you want to delete "${filename}"?`)) {
+                        // Show "deleting" state
+                        const originalHTML = button.innerHTML;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                        button.disabled = true;
+                        
+                        // Send delete request
+                        fetch(`/delete_file?filename=${encodeURIComponent(filename)}&type=${fileType}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Remove file item from DOM
+                                button.closest('.attachment-item').remove();
+                                
+                                // Show toast notification
+                                showToast(`File "${filename}" deleted successfully`, 'success');
+                                
+                                // Update empty state if needed
+                                if (fileType === 'upload') {
+                                    if (fileList.querySelectorAll('.attachment-item').length === 0) {
+                                        fileList.innerHTML = '<p class="text-center text-muted">No files uploaded yet</p>';
+                                    }
+                                } else if (fileType === 'attachment') {
+                                    if (attachmentsList.querySelectorAll('.attachment-item').length === 0) {
+                                        attachmentsList.innerHTML = '<p class="text-center text-muted">No attachments uploaded yet</p>';
+                                    }
+                                }
+                            } else {
+                                // Restore button and show error
+                                button.innerHTML = originalHTML;
+                                button.disabled = false;
+                                showToast(`Error deleting file: ${data.error}`, 'danger');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Restore button and show error
+                            button.innerHTML = originalHTML;
+                            button.disabled = false;
+                            showToast('Error deleting file', 'danger');
+                        });
+                    }
+                }
+            });
+            
+            // Function to copy record data to clipboard
+            window.copyRecord = function(recordIndex) {
+                const recordData = window.jsonData[recordIndex];
+                if (!recordData) return;
+                
+                const jsonString = JSON.stringify(recordData, null, 2);
+                navigator.clipboard.writeText(jsonString).then(function() {
+                    showToast('Record copied to clipboard!', 'success');
+                }).catch(function(err) {
+                    showToast('Could not copy: ' + err, 'danger');
+                });
+            };
+            
+            // Toast notification system
+            function showToast(message, type = 'info') {
+                // Create toast container if it doesn't exist
+                let toastContainer = document.getElementById('toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'toast-container';
+                    toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+                    toastContainer.style.zIndex = '1050';
+                    document.body.appendChild(toastContainer);
+                }
+                
+                const toastId = 'toast-' + Date.now();
+                
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.id = toastId;
+                toast.className = `toast fade-in`;
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+                
+                // Set toast content
+                let icon = 'info-circle';
+                let bgColor = 'primary';
+                
+                if (type === 'success') {
+                    icon = 'check-circle';
+                    bgColor = 'success';
+                } else if (type === 'danger') {
+                    icon = 'exclamation-circle';
+                    bgColor = 'danger';
+                } else if (type === 'warning') {
+                    icon = 'exclamation-triangle';
+                    bgColor = 'warning';
+                }
+                
+                toast.innerHTML = `
+                    <div class="toast-header bg-${bgColor} text-white">
+                        <i class="fas fa-${icon} me-2"></i>
+                        <strong class="me-auto">Notification</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                `;
+                
+                // Add to container
+                toastContainer.appendChild(toast);
+                
+                // Initialize and show toast
+                const bsToast = new bootstrap.Toast(toast, {
+                    delay: 3000,
+                    animation: true
+                });
+                
+                bsToast.show();
+                
+                // Remove toast after it's hidden
+                toast.addEventListener('hidden.bs.toast', function() {
+                    toast.remove();
+                });
+            }
+
+            // Add JSON Modal functionality
+            const addJsonBtn = document.getElementById('add-json-btn');
+            const addJsonModal = new bootstrap.Modal(document.getElementById('addJsonModal'));
+            const jsonInput = document.getElementById('jsonInput');
+            const jsonError = document.getElementById('jsonError');
+            const submitJsonBtn = document.getElementById('submitJsonBtn');
+
+            addJsonBtn.addEventListener('click', function() {
+                jsonInput.value = '';
+                jsonError.textContent = '';
+                addJsonModal.show();
+            });
+
+            submitJsonBtn.addEventListener('click', function() {
+                const jsonText = jsonInput.value.trim();
+                if (!jsonText) {
+                    jsonError.textContent = 'Please enter JSON data';
+                    return;
+                }
+
+                try {
+                    // Parse JSON to validate format
+                    const jsonData = JSON.parse(jsonText);
+                    
+                    // Show loading state
+                    submitJsonBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Adding...';
+                    submitJsonBtn.disabled = true;
+                    
+                    // Send to server
+                    fetch('/add_json_data', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: jsonText
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        submitJsonBtn.innerHTML = 'Add Data';
+                        submitJsonBtn.disabled = false;
+                        
+                        if (data.success) {
+                            // Update the global data
+                            window.jsonData = data.data;
+                            
+                            // Display the JSON data
+                            displayJSONData(data.data);
+                            
+                            // Close modal
+                            addJsonModal.hide();
+                            
+                            // Show success message
+                            showToast('JSON data successfully added', 'success');
+                        } else {
+                            jsonError.textContent = data.error || 'Error adding data';
+                        }
+                    })
+                    .catch(error => {
+                        submitJsonBtn.innerHTML = 'Add Data';
+                        submitJsonBtn.disabled = false;
+                        jsonError.textContent = 'Error: ' + error.message;
+                        console.error('Error:', error);
+                    });
+                } catch (error) {
+                    jsonError.textContent = 'Invalid JSON format: ' + error.message;
+                }
+            });
+
+            // Add refresh button click handler
+            document.addEventListener('click', function(e) {
+                if (e.target && (e.target.classList.contains('refresh-button') || e.target.parentElement.classList.contains('refresh-button'))) {
+                    const button = e.target.classList.contains('refresh-button') ? e.target : e.target.parentElement;
+                    const recordId = button.getAttribute('data-record-id');
+                    const filename = button.getAttribute('data-filename');
+                    
+                    if (!recordId || !filename) return;
+                    
+                    // Show refreshing state
+                    button.classList.add('refreshing');
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    button.disabled = true;
+                    
+                    // Reset verify button state
+                    const verifyButton = button.parentElement.querySelector('.verify-button');
+                    if (verifyButton) {
+                        verifyButton.classList.remove('verified', 'failed', 'verifying');
+                        verifyButton.innerHTML = '<i class="fas fa-check-circle"></i> Verify';
+                        verifyButton.disabled = false;
+                    }
+                    
+                    // Check if file exists in attachments
+                    fetch('/verify_attachment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            filename: filename
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Reset refresh button
+                        button.classList.remove('refreshing');
+                        button.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                        button.disabled = false;
+                        
+                        if (data.exists) {
+                            // Update verify button to show success
+                            verifyButton.classList.add('verified');
+                            verifyButton.innerHTML = '<i class="fas fa-check-circle"></i> Verified';
+                            showToast('File verified successfully!', 'success');
+                        } else {
+                            // Update verify button to show failure
+                            verifyButton.classList.add('failed');
+                            verifyButton.innerHTML = '<i class="fas fa-times-circle"></i> Missing';
+                            showToast('File not found in attachments folder', 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Reset refresh button
+                        button.classList.remove('refreshing');
+                        button.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                        button.disabled = false;
+                        
+                        // Reset verify button
+                        verifyButton.classList.remove('verified', 'failed', 'verifying');
+                        verifyButton.innerHTML = '<i class="fas fa-check-circle"></i> Verify';
+                        verifyButton.disabled = false;
+                        
+                        showToast('Error verifying file', 'danger');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
