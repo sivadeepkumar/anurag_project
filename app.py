@@ -430,41 +430,49 @@ def update_json_data():
 
 
 
-# @app.route('/send_email', methods=['POST'])
-# def send_email():
-#     data = request.json
-
-#     print("📥 Received data:", data)
-#     with open('app/uploads/email_data.json', 'r') as file:
-#         json_file = json.load(file)
-#     print("📄 Loaded JSON:", json_file)
-
-
-#     try:
-# # ✅ Direct keys
-#         sender_email = data['sender_email']
-#         app_password = data['app_password']
-#         subject = data['subject']
-#         body = data['body']
-
-#         print("✅ Sender Email:", sender_email)
-#         print("✅ App Password:", app_password)
-#         print("✅ Subject:", subject)
-#         print("✅ Body:", body)
-
-#         for each in json_file :
-#             print("\u274c",each)
-#             print()
-#         return jsonify({
-#             'success': True,
-#             'message': 'Data parsed successfully'
-#         })
-
-#     except KeyError as e:
-#         return jsonify({
-#             'success': False,
-#             'error': f'Missing key: {e}'
-#         }), 400
+@app.route('/update_record', methods=['POST'])
+def update_record():
+    """Update a single record in the JSON data"""
+    try:
+        data = request.json
+        if not data or 'record_id' not in data or 'record_data' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'Missing required fields'
+            })
+        
+        record_id = int(data['record_id'])
+        record_data = data['record_data']
+        
+        # Load existing data
+        with open(app.config['FIXED_JSON_FILE'], 'r') as f:
+            json_data = json.load(f)
+        
+        # Validate record_id
+        if record_id < 0 or record_id >= len(json_data):
+            return jsonify({
+                'success': False,
+                'error': 'Invalid record ID'
+            })
+        
+        # Update the record
+        json_data[record_id] = record_data
+        
+        # Save updated data
+        with open(app.config['FIXED_JSON_FILE'], 'w') as f:
+            json.dump(json_data, f, indent=4)
+        
+        return jsonify({
+            'success': True,
+            'data': json_data,
+            'message': 'Record updated successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
 
 @app.route('/send_email', methods=['POST'])
 def send_email():
@@ -475,12 +483,10 @@ def send_email():
         # Extract sender details
         sender_email = data['sender_email']
         app_password = data['app_password']
-        default_subject = data['subject']
-        default_body = data['body']
+
 
         print("✅ Sender Email:", sender_email)
-        print("✅ Subject:", default_subject)
-        print("✅ Body:", default_body)
+
 
         # Load recipients from file
         with open('app/uploads/email_data.json', 'r') as file:
@@ -489,13 +495,14 @@ def send_email():
         print(f"📄 Loaded {len(recipients)} recipients from JSON")
 
         for recipient in recipients:
+            print(recipient)
             try:
                 name = recipient.get('NAME', 'Recipient')
                 to_email = recipient['SENDER_EMAIL']
                 filename = recipient['ATTACH_FILENAME']
-                subject = recipient.get('SUBJECT', default_subject)
-                context = recipient.get('CONTEXT', default_body)
-                status = recipient.get('STATUS', 'READY')
+                subject = recipient['SUBJECT']
+                context = recipient['CONTEXT']
+                # status = recipient.get('STATUS', 'READY')
 
                 print(f"📨 Sending to: {to_email} ({name})")
 

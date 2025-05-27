@@ -38,6 +38,11 @@
             color: #2e2e2e;
             line-height: 1.6;
         }
+
+        .jack {
+            padding-bottom: 10px;
+
+        }
         
         .dashboard-container {
             max-width: 1200px;
@@ -302,54 +307,90 @@
             justify-content: space-between;
         }
         
-        .verify-button {
-            background: rgba(67, 97, 238, 0.1);
-            border: none;
-            color: var(--primary-color);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        /* Base style for field-value, ensure it is a flex container */
+        .field-value {
+            font-weight: 500;
+            overflow-wrap: break-word;
+            font-size: 0.8rem;
+            color: #333;
+            display: flex; /* Use flexbox for layout within value */
+            align-items: center;
+            /* Remove justify-content and gap from base field-value */
+        }
+
+        /* Special styling for attachment field value */
+        .field-item.attachment-field .field-value {
+             justify-content: space-between; /* Space out filename and buttons */
+             gap: 0.5rem; /* Space between filename and button container */
+             min-width: 0; /* Allow field-value to shrink */
+        }
+
+        /* New styles for filename container */
+        .filename-container {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.5rem;
+            min-width: 0; /* Important for text truncation in flexbox */
+            flex: 1; /* Take up remaining space */
+            overflow: hidden; /* Hide overflowing text */
         }
-        
-        .verify-button:hover {
-            background: rgba(67, 97, 238, 0.2);
-            transform: translateY(-1px);
+
+        .filename-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #333;
+            position: relative;
+            /* Tooltip styles removed from here to a dedicated class */
         }
-        
-        .verify-button i {
-            font-size: 0.8rem;
+
+        /* Tooltip styles */
+        .filename-with-tooltip {
+             position: relative;
+             cursor: help;
         }
-        
-        .verify-button.verifying {
-            background: rgba(67, 97, 238, 0.2);
-            cursor: not-allowed;
+
+        .filename-with-tooltip::after {
+            content: attr(data-full-filename);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
         }
-        
-        .verify-button.verified {
-            background: rgba(46, 213, 115, 0.1);
-            color: #2ed573;
+
+        .filename-with-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+            margin-bottom: -0.5rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
         }
-        
-        .verify-button.failed {
-            background: rgba(247, 37, 133, 0.1);
-            color: var(--danger-color);
+
+        .filename-with-tooltip:hover::after,
+        .filename-with-tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
         }
-        
-        .field-item.attachment-field {
-            border-left-color: #f72585;
-            background-color: rgba(247, 37, 133, 0.05);
-        }
-        
-        .field-item.attachment-field:hover {
-            background-color: rgba(247, 37, 133, 0.1);
-        }
-        
+
         .field-name {
             font-weight: 600;
             display: block;
@@ -359,15 +400,6 @@
             letter-spacing: 0.5px;
             color: #6e7bb8;
             opacity: 0.9;
-        }
-        
-        .field-value {
-            font-weight: 500;
-            overflow-wrap: break-word;
-            font-size: 0.8rem;
-            color: #333;
-            display: flex;
-            align-items: center;
         }
         
         /* Status Badges */
@@ -778,6 +810,233 @@
             background: rgba(67, 97, 238, 0.2);
             cursor: not-allowed;
         }
+
+        /* Restore and adjust .field-item.attachment-field styles */
+        .field-item.attachment-field {
+            border-left-color: #f72585;
+            background-color: rgba(247, 37, 133, 0.05);
+            display: flex;
+            flex-direction: column; /* Stack label and value */
+            justify-content: center;
+            gap: 0.2rem;
+            min-width: 0;
+        }
+        
+        .field-item.attachment-field:hover {
+            background-color: rgba(247, 37, 133, 0.1);
+            transform: translateX(2px);
+            border-left-color: var(--primary-color);
+        }
+
+        /* Ensure field value uses flex for horizontal layout */
+        .field-value {
+            font-weight: 500;
+            overflow-wrap: break-word;
+            font-size: 0.8rem;
+            color: #333;
+            display: flex; /* Use flexbox for layout within value */
+            align-items: center;
+             /* This ensures filename and verify button are side-by-side */
+            justify-content: space-between;
+            gap: 0.5rem; /* Space between filename and button container */
+            min-width: 0; /* Allow field-value to shrink */
+        }
+
+        /* New styles for filename container */
+        .filename-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 0; /* Important for text truncation in flexbox */
+            flex: 1; /* Take up remaining space */
+            overflow: hidden; /* Hide overflowing text */
+        }
+
+        .filename-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #333;
+            position: relative;
+            /* Tooltip styles removed from here to a dedicated class */
+        }
+
+        /* Tooltip styles */
+        .filename-with-tooltip {
+             position: relative;
+             cursor: help;
+        }
+
+        .filename-with-tooltip::after {
+            content: attr(data-full-filename);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
+        }
+
+        .filename-with-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+            margin-bottom: -0.5rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
+        }
+
+        .filename-with-tooltip:hover::after,
+        .filename-with-tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Restore .verify-button styles */
+        .verify-button {
+            background: rgba(67, 97, 238, 0.1);
+            border: none;
+            color: var(--primary-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-shrink: 0; /* Prevent button from shrinking */
+            white-space: nowrap; /* Keep button text on one line */
+        }
+
+        .verify-button:hover {
+            background: rgba(67, 97, 238, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .verify-button i {
+            font-size: 0.8rem;
+        }
+
+        .verify-button.verifying {
+            background: rgba(67, 97, 238, 0.2);
+            cursor: not-allowed;
+        }
+
+        .verify-button.verified {
+            background: rgba(46, 213, 115, 0.1);
+            color: #2ed573;
+        }
+
+        .verify-button.failed {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Styles for the container holding verify and refresh buttons */
+        .verify-actions-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0; /* Ensure this container doesn't shrink */
+        }
+
+        /* Edit mode styles */
+        .field-item.edit-mode {
+            padding: 0.5rem;
+            background-color: #f8faff;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .field-item.edit-mode input,
+        .field-item.edit-mode textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d9e6;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .field-item.edit-mode input:focus,
+        .field-item.edit-mode textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+            outline: none;
+        }
+
+        .field-item.edit-mode textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: #f8faff;
+            border-radius: 8px;
+        }
+
+        .edit-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-actions .save-button {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .edit-actions .cancel-button {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .edit-actions button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-actions .save-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .edit-actions .cancel-button:hover {
+            background-color: #dee2e6;
+        }
+
+        .action-button.edit-button {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .action-button.edit-button:hover {
+            background: rgba(67, 97, 238, 0.25);
+        }
     </style>
 </head>
 <body>
@@ -862,9 +1121,14 @@
                                 <div class="card-container h-100 w-100">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4>Preview JSON Data</h4>
-                                        <button id="add-json-btn" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-plus me-1"></i> Add JSON Record
-                                        </button>
+                                        <div class="d-flex gap-2">
+                                            <button id="verify-all-btn" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check-circle me-1"></i> Verify All
+                                            </button>
+                                            <button id="add-json-btn" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-plus me-1"></i> Add JSON Record
+                                            </button>
+                                        </div>
                                     </div>
                                     <div id="json-preview" class="json-preview">
                                         <p class="text-center text-muted">JSON data will appear here</p>
@@ -1027,21 +1291,9 @@
             <label for="senderEmail">Your Gmail:</label>
             <input type="email" class="form-control" id="senderEmail" required>
         </div>
-        <div class="form-group">
+        <div class="form-group jack">
             <label for="appPassword">App Password:</label>
             <input type="password" class="form-control" id="appPassword" required>
-        </div>
-        <!-- <div class="form-group">
-            <label for="recipientEmail">Recipient Email:</label>
-            <input type="email" class="form-control" id="recipientEmail" required>
-        </div> -->
-        <div class="form-group">
-            <label for="emailSubject">Subject:</label>
-            <input type="text" class="form-control" id="emailSubject" required>
-        </div>
-        <div class="form-group">
-            <label for="emailBody">Message:</label>
-            <textarea class="form-control" id="emailBody" rows="4" required></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Send Email</button>
     </form>
@@ -1054,10 +1306,7 @@
 
         const data = {
             sender_email: document.getElementById('senderEmail').value,
-            app_password: document.getElementById('appPassword').value,
-            // recipient_email: document.getElementById('recipientEmail').value,
-            subject: document.getElementById('emailSubject').value,
-            body: document.getElementById('emailBody').value
+            app_password: document.getElementById('appPassword').value
         };
 
         const response = await fetch('/send_email', {
@@ -1200,18 +1449,18 @@
                             const hasFilename = value && value.trim() !== '';
                             if (hasFilename) {
                                 iconHtml = `
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="fas fa-paperclip me-1"></i>
-                                        <span>${value}</span>
-                                        <div class="d-flex gap-1">
-                                            <button class="verify-button" data-record-id="${i}" data-filename="${value}">
-                                                <i class="fas fa-check-circle"></i>
-                                                Verify
-                                            </button>
-                                            <button class="refresh-button" data-record-id="${i}" data-filename="${value}" title="Refresh verification">
-                                                <i class="fas fa-sync-alt"></i>
-                                            </button>
-                                        </div>
+                                    <div class="filename-container">
+                                        <i class="fas fa-paperclip"></i>
+                                        <span class="filename-text filename-with-tooltip" data-full-filename="${value}">${value}</span>
+                                    </div>
+                                    <div class="verify-actions-container">
+                                        <button class="verify-button" data-record-id="${i}" data-filename="${value}">
+                                            <i class="fas fa-check-circle"></i>
+                                            Verify
+                                        </button>
+                                        <button class="refresh-button" data-record-id="${i}" data-filename="${value}" title="Refresh verification">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
                                     </div>
                                 `;
                             } else {
@@ -1249,6 +1498,10 @@
                                     Record #${i + 1}
                                 </div>
                                 <div class="record-actions">
+                                    <button class="action-button edit-button" data-record-id="${i}" title="Edit record">
+                                        <i class="fas fa-edit"></i>
+                                        <span class="tooltip">Edit Record</span>
+                                    </button>
                                     <button class="action-button copy-button" data-record-id="${i}" title="Copy record">
                                         <i class="fas fa-copy"></i>
                                         <span class="tooltip">Copy Record</span>
@@ -1412,6 +1665,146 @@
                         // Clean up modal when hidden
                         confirmDialog.addEventListener('hidden.bs.modal', function() {
                             confirmDialog.remove();
+                        });
+                    });
+                });
+
+                // Setup edit buttons
+                const editButtons = document.querySelectorAll('.edit-button');
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const recordId = this.getAttribute('data-record-id');
+                        if (!recordId || !window.jsonData) return;
+                        
+                        const recordData = window.jsonData[recordId];
+                        if (!recordData) return;
+                        
+                        const card = this.closest('.record-card');
+                        const cardBody = card.querySelector('.card-body');
+                        const originalContent = cardBody.innerHTML;
+                        
+                        // Create edit mode UI
+                        let editHtml = '';
+                        for (const [key, value] of Object.entries(recordData)) {
+                            if (key === 'STATUS') continue;
+                            
+                            let inputType = 'text';
+                            let inputValue = value || '';
+                            
+                            if (key === 'SENDER_EMAIL' || key.includes('EMAIL')) {
+                                inputType = 'email';
+                            } else if (key === 'CONTEXT') {
+                                editHtml += `
+                                    <div class="field-item edit-mode">
+                                        <span class="field-name">${key}</span>
+                                        <textarea class="form-control" data-field="${key}">${inputValue}</textarea>
+                                    </div>
+                                `;
+                                continue;
+                            }
+                            
+                            editHtml += `
+                                <div class="field-item edit-mode">
+                                    <span class="field-name">${key}</span>
+                                    <input type="${inputType}" class="form-control" data-field="${key}" value="${inputValue}">
+                                </div>
+                            `;
+                        }
+                        
+                        // Add save/cancel buttons
+                        editHtml += `
+                            <div class="edit-actions">
+                                <button class="save-button" data-record-id="${recordId}">
+                                    <i class="fas fa-save me-1"></i> Save
+                                </button>
+                                <button class="cancel-button">
+                                    <i class="fas fa-times me-1"></i> Cancel
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Replace content with edit mode
+                        cardBody.innerHTML = editHtml;
+                        
+                        // Focus first input
+                        const firstInput = cardBody.querySelector('input, textarea');
+                        if (firstInput) {
+                            firstInput.focus();
+                        }
+                        
+                        // Handle save button
+                        const saveButton = cardBody.querySelector('.save-button');
+                        saveButton.addEventListener('click', function() {
+                            const updatedData = { ...recordData };
+                            const inputs = cardBody.querySelectorAll('input, textarea');
+                            
+                            // Validate required fields
+                            let isValid = true;
+                            inputs.forEach(input => {
+                                const field = input.getAttribute('data-field');
+                                const value = input.value.trim();
+                                
+                                if (field === 'SENDER_EMAIL' && !value) {
+                                    isValid = false;
+                                    input.classList.add('is-invalid');
+                                } else {
+                                    input.classList.remove('is-invalid');
+                                }
+                                
+                                updatedData[field] = value;
+                            });
+                            
+                            if (!isValid) {
+                                showToast('Please fill in all required fields', 'danger');
+                                return;
+                            }
+                            
+                            // Show loading state
+                            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving...';
+                            saveButton.disabled = true;
+                            
+                            // Send update request
+                            fetch('/update_record', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    record_id: recordId,
+                                    record_data: updatedData
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Update the global data
+                                    window.jsonData = data.data;
+                                    
+                                    // Refresh the display
+                                    displayJSONData(data.data);
+                                    
+                                    // Show success message
+                                    showToast('Record updated successfully', 'success');
+                                } else {
+                                    // Restore original content
+                                    cardBody.innerHTML = originalContent;
+                                    showToast(`Error updating record: ${data.error}`, 'danger');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                // Restore original content
+                                cardBody.innerHTML = originalContent;
+                                showToast('Error updating record', 'danger');
+                            });
+                        });
+                        
+                        // Handle cancel button
+                        const cancelButton = cardBody.querySelector('.cancel-button');
+                        cancelButton.addEventListener('click', function() {
+                            cardBody.innerHTML = originalContent;
+                            setupCardButtonListeners(); // Reattach event listeners
                         });
                     });
                 });
@@ -2165,6 +2558,80 @@
                         showToast('Error verifying file', 'danger');
                     });
                 }
+            });
+
+            // Verify All functionality
+            const verifyAllBtn = document.getElementById('verify-all-btn');
+            
+            verifyAllBtn.addEventListener('click', async function() {
+                // Disable the button and show loading state
+                verifyAllBtn.disabled = true;
+                verifyAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Verifying...';
+                
+                // Get all record cards
+                const recordCards = document.querySelectorAll('.record-card');
+                let completedCount = 0;
+                let successCount = 0;
+                let failureCount = 0;
+                
+                // Process each record
+                for (const card of recordCards) {
+                    const verifyButton = card.querySelector('.verify-button');
+                    if (!verifyButton) continue;
+                    
+                    const filename = verifyButton.getAttribute('data-filename');
+                    if (!filename) continue;
+                    
+                    // Update verify button state
+                    verifyButton.classList.remove('verified', 'failed', 'verifying');
+                    verifyButton.classList.add('verifying');
+                    verifyButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+                    verifyButton.disabled = true;
+                    
+                    try {
+                        // Check if file exists in attachments
+                        const response = await fetch('/verify_attachment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                filename: filename
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.exists) {
+                            verifyButton.classList.remove('verifying');
+                            verifyButton.classList.add('verified');
+                            verifyButton.innerHTML = '<i class="fas fa-check-circle"></i> Verified';
+                            successCount++;
+                        } else {
+                            verifyButton.classList.remove('verifying');
+                            verifyButton.classList.add('failed');
+                            verifyButton.innerHTML = '<i class="fas fa-times-circle"></i> Missing';
+                            failureCount++;
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        verifyButton.classList.remove('verifying');
+                        verifyButton.classList.add('failed');
+                        verifyButton.innerHTML = '<i class="fas fa-times-circle"></i> Error';
+                        failureCount++;
+                    }
+                    
+                    completedCount++;
+                    verifyButton.disabled = false;
+                }
+                
+                // Re-enable the verify all button
+                verifyAllBtn.disabled = false;
+                verifyAllBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i> Verify All';
+                
+                // Show summary toast
+                showToast(`Verification complete: ${successCount} verified, ${failureCount} failed`, 
+                    failureCount === 0 ? 'success' : 'warning');
             });
         });
     </script>
