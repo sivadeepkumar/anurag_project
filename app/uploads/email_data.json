@@ -8,11 +8,11 @@
         "SUBJECT": "GIVEN FILE IS SHARED"
     },
     {
-        "ATTACH_FILENAME": "a1_2a_3_photo_merged_1_RAM_SEWAK_KUMAR.pdf",
-        "CONTEXT": "Thank you for attending the Micromedex Training Program held on March 25, 2026. We hope you found the session informative and valuable in enhancing your understanding of Micromedex and its applications in clinical decision-making and research.\n\nPlease find attached your Certificate of Participation, presented as a token of appreciation for your valuable participation.\n\nWishing you continued success in your academic and professional journey!",
         "NAME": "Participant",
-        "SENDER_EMAIL": "sivadeepkumar0@gmail.com",
-        "STATUS": "READY",
-        "SUBJECT": "GIVEN FILE IS SHARED"
+        "SENDER_EMAIL": "fighter@mgadsfa",
+        "ATTACH_FILENAME": "a1_2a_3_photo_merged_1_RAM_SEWAK_KUMAR.pdf",
+        "SUBJECT": "GIVEN FILE IS SHARED",
+        "CONTEXT": "Thank you for attending the Micromedex Training Program held on March 25, 2026. We hope you found the session informative and valuable in enhancing your understanding of Micromedex and its applications in clinical decision-making and research.\n\nPlease find attached your Certificate of Participation, presented as a token of appreciation for your valuable participation.\n\nWishing you continued success in your academic and professional journey!\n",
+        "STATUS": "READY"
     }
 ]
