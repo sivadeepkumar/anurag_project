@@ -511,7 +511,43 @@ def send_email():
                 msg['Subject'] = subject
                 msg['From'] = sender_email
                 msg['To'] = to_email
-                msg.set_content(f"Hi {name},\n\n{context}\n\nRegards,\n{sender_email}")
+                msg.set_content(
+                    f"Dear {name},\n\n"
+                    "Thank you for attending the Micromedex Training Program held on March 25, 2026. "
+                    "We hope you found the session informative and valuable in enhancing your understanding of "
+                    "Micromedex and its applications in clinical decision-making and research.\n\n"
+                    "Please find attached your Certificate of Participation, presented as a token of appreciation "
+                    "for your valuable participation.\n\n"
+                    "Wishing you continued success in your academic and professional journey!\n\n"
+                    "Thanks & Regards\n"
+                    "www.daiknow.com"
+                )
+                msg.add_alternative(
+                    f"""\
+<html>
+  <body style="font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #111111;">
+    <p style="margin: 0 0 12px 0;">Dear {name},</p>
+    <p style="margin: 0 0 12px 0;">
+      Thank you for attending the <strong>Micromedex Training Program</strong> held on
+      <strong>March 25, 2026</strong>. We hope you found the session informative and valuable in
+      enhancing your understanding of Micromedex and its applications in clinical decision-making
+      and research.
+    </p>
+    <p style="margin: 0 0 12px 0;">
+      Please find attached your <strong>Certificate of Participation</strong>, presented as a token
+      of appreciation for your valuable participation.
+    </p>
+    <p style="margin: 0 0 12px 0;">Wishing you continued success in your academic and professional journey!</p>
+    <p style="margin: 0 0 8px 0;">Thanks &amp; Regards</p>
+    <p style="margin: 0 0 8px 0;">
+      <img width="96" height="81" src="https://ci3.googleusercontent.com/mail-sig/AIorK4yK_lh6u1pZs7ZpBhqlf7MKfgdftJkvWpA-etPsSpwNAEs919bLj0_fC9qVSdVJCVnr5kZLl9aktuYI" alt="Signature image">
+    </p>
+    <p style="margin: 0;"><a href="https://www.daiknow.com/" style="color: #1a73e8;">www.daiknow.com</a></p>
+  </body>
+</html>
+""",
+                    subtype='html'
+                )
 
                 # Attach file
                 attachment_path = os.path.join('app', 'attachments', filename)

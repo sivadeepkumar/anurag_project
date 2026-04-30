@@ -2,8 +2,8 @@ import smtplib
 from email.message import EmailMessage
 
 # Your app credentials
-EMAIL_ADDRESS = "sivadeepkumar3@gmail.com"
-EMAIL_PASSWORD = "mylr mhrm gwni fvbl"  # Use the 16-character App Password
+# EMAIL_ADDRESS = "sivadeepkumar3@gmail.com"
+# EMAIL_PASSWORD = "mylr mhrm gwni fvbl"  # Use the 16-character App Password
 
 # Create email
 msg = EmailMessage()
